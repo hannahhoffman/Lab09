@@ -36,14 +36,16 @@ T** Sort<T>::quickSort(T** items, int numItems, int (*compare) (T* one, T* two))
    //create a new array that will be sorted and returned
    //this is in case the original, unsorted array is also needed
 
-
-
-
-
-
-
-
-
+   T** new_items = new T*[numItems];
+   
+   for (int i = 0; i < numItems; i++)
+   {
+	   new_items[i] = items[i];
+   }
+   
+   _quickSort(new_items, 0, numItems - 1, compare);
+   
+   return new_items;
 
 }
 
@@ -56,17 +58,15 @@ void Sort<T>::_quickSort(T** items, int first, int last, int (*compare) (T* one,
    //make the necessary partition and recursive calls for quick sort
    if (first < last)
    {
-
-
-
-
-
-
-
-
-
-
-
+      int index_pivot;
+	  
+	  if (first < last)
+	  {
+		  index_pivot = partition(items, first, last, compare);
+		  
+		  _quickSort(items, first, index_pivot - 1, compare);
+		  _quickSort(items, index_pivot + 1, last, compare);
+	  }
    }  
 }  
 
@@ -81,25 +81,28 @@ int Sort<T>::partition(T** items, int first, int last, int (*compare) (T* one, T
 
    //initially, choosePivot does nothing           
    choosePivot(items, first, last); 
+   
+   int pivot = first;
+   
+   int lastS1 = first;
+   
+   for (int other_region = first + 1; other_region <= last; other_region++)
+   {
+	   if ((*compare)(items[other_region], items[pivot]) < 0)
+	   {
+		   lastS1++;
+		   temp = items[other_region];
+		   items[other_region] = items[lastS1];
+		   items[lastS1] = temp;		   
+	   }  
+   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
-
+   temp = items[pivot];
+   items[pivot] = items[lastS1];
+   items[lastS1] = temp;
+   return lastS1;
 }
+
 
 template < class T >
 void Sort<T>::choosePivot(T** items, int first, int last)
@@ -108,11 +111,11 @@ void Sort<T>::choosePivot(T** items, int first, int last)
    //find a better item to be the partition than simply using the item in the first index
    //you will need to swap
 
-
-
-
-
-
+   int middle = first + ((last - first)/ 2);
+   
+   T* temp = items[middle];
+   items[middle] = items[first];
+   items[first] = temp;
 
 }
 
